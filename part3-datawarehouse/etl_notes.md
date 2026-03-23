@@ -1,26 +1,27 @@
-## Subjective 
-
 ## ETL Decisions
 
-### Decision 1 — Fixing Date Format
+### Decision 1 — Standardizing Date Formats
 
 Problem:
-The dates in the raw file were in dd-mm-yyyy format, which MySQL doesn’t support directly. This caused issues while inserting into the date dimension and performing date-based analysis.
+The raw dataset contained inconsistent date formats such as 29/08/2023, 12-12-2023, and 2023-02-05.
+This caused ETL failures when loading into the date dimension.
 
 Resolution:
-I converted all date values into YYYY-MM-DD format using STR_TO_DATE() during transformation. This ensured the dates were stored correctly and could be used reliably for joins and reporting.
+All dates were converted into a uniform ISO format: YYYY-MM-DD before inserting into dim_date and fact_sales. This ensures proper joins, year/month extraction, and analytics.
 
-### Decision 2 — Standardizing Category Values
+### Decision 2 — Fixing Inconsistent Category Names
 
 Problem:
-The category column had inconsistent values like electronics, Electronics, and also variations such as grocery and Groceries. This could lead to duplicate entries in the product dimension and incorrect aggregation in reports.
+The dataset included multiple variations of category labels such as Groceries, Grocery, electronics, and Electronics.
+This leads to duplicated categories and incorrect aggregations.
 
 Resolution:
-I standardized all category values into a consistent format by normalizing casing and naming. For example, all variations like grocery and Groceries were converted into a single value (Groceries). This ensured clean and consistent dimension data.
+All categories were standardized with consistent casing (e.g., Electronics, Clothing, Grocery). These cleaned values were inserted into dim_product.
 
-### Decision 3 — Handling Blank Store City Values
+### Decision 3 — Handling Missing Store Cities
+
 Problem:
-Some records had blank values in the store_city field. This could create issues while loading the store dimension and also affect location-based analysis.
+Some rows in the raw data had empty store_city values, which would break foreign key constraints in the star schema.
+
 Resolution:
-Since the store_name was available, I used it to identify and fill the missing store_city values based on known mappings. This ensured that no store record had missing location data and helped maintain consistency in the store dimension.
-Since the store_name was available, I used it to identify and fill the missing store_city values based on known mappings. This ensured that no store record had missing location data and helped maintain consistency in the store dimension.
+Missing store cities were inferred based on store name (e.g., “Mumbai Central” → “Mumbai”). Rows with no reliable inference were flagged for cleaning. The warehouse now contains consistent store data.
