@@ -1,29 +1,36 @@
-## Part 1 — Relational Databases 
-## 1.1 — Anomaly Analysis
-An Insert Anomaly : In flat file orders_flat.csv the order table, customer table and the product table are merged. So it is not possible to insert a new product
-which has not been ordered yet. For example : "Keyboard" is not ordered till date. This product cannot be inserted because the table require fields like order_id, customer_id, and order_date. This creates an Insert Anomaly due to poor table design.
+## Anomaly Analysis
 
+### Insert Anomaly:
+**Definition:** An insert anomaly occurs when we cannot add a new piece of information without also inserting unrelated data.
 
-An Update Anomaly : In the flat file orders_flat.csv, customer details such as customer_id, customer_name, and customer_city are stored together with order details. If a customer changes their city, the customer_city value must be updated in multiple rows where that customer appears. For example if Customer having customer_id = C001 , customer_name = Rohan Mehta and customer_city = Mumbai changes the city to Bangalore, then all rows with customer_id = C001 (rows 3,11,15,22,42,46,54,70,79,95,103,121,124,132,133,138,168,174,182 and 187) has to be updated.If some rows are not updated and some are updated data inconsistency will occur and create Update Anomaly.
+**Example from orders_flat.csv:**  
+For example, to add a new product “P010 – Office Chair”, you must also create a dummy order row, because product attributes are stored inside each order row.
+This happens because columns like product_id, product_name, and category appear only when an order exists.
+Thus, a new product cannot be inserted independently.
 
+---
 
-A Delete Anomaly : In the flat file orders_flat.csv, order, customer and product information are stored together in the same table. When a record is deleted, other important information stored in that row may also be lost unintentionally.
+### Update Anomaly:
+**Definition:** An update anomaly occurs when updating a single logical fact requires changing it in multiple rows, creating a risk of inconsistency.
 
-For example, if the record with order_id = ORD1185, (row 13) is deleted, the product information such as product_name = Webcam will also be removed completely from the table since that product appears only in that row. This loss of important information due to deletion of a record is called a Delete Anomaly.
+**Example from orders_flat.csv:**  
+Customer details are duplicated across many rows.
+For example, customer C002 – Priya Sharma appears in multiple rows with the same email (priya@gmail.com).
+If Priya changes her email, updating just one row (e.g., the row with order_id ORD1027) would create inconsistent customer records.
 
-## Subjective
+---
+
+### Delete Anomaly:
+**Definition:** A delete anomaly occurs when deleting a record unintentionally destroys other useful information.
+
+**Example from orders_flat.csv:**  
+If the only order belonging to product P004 – Notebook is deleted, then all product details (name, category, price) would be lost from the system.
+Since product master data lives inside each order row, deleting a single order erases the only record of that product.
+
+---
+
 ## Normalization Justification
 
-Keeping all the data in a single table may appear simple, but it leads to several data anomalies such as insert, update, and delete anomalies. Normalization helps to eliminate these issues by organizing data into related tables.
-
-Insert Anomaly:
-In the flat dataset orders_flat.csv, it is difficult to add information about a new product if no order exists for it. For example, if we want to add a new product like Keyboard, we cannot store it unless an order is created. In the normalized schema, the product can be inserted directly into the product table without requiring an order record.
-
-Update Anomaly:
-Suppose a customer with customer_id = C001 moves from Mumbai to Bangalore. In the flat table (orders_flat.csv), the city information is repeated in many rows (for example rows 3, 11, 15, 22, etc.). Updating the city would require modifying all these rows. If even one row is missed, the dataset becomes inconsistent.
-In the normalized schema, customer and city information are stored separately from orders. Therefore, we only update the city in the customer table once. This prevents inconsistency and helps to preserve historical order data. The orders that were placed when the customer lived in Mumbai remain unchanged, while the new address is updated correctly in the customer table.
-
-Delete Anomaly:
-In the flat file, deleting an order such as order_id = ORD1185 may also remove important information like product_name = Webcam if that product appears only in that row. In the normalized design, deleting an order only removes the order record, while product, customer, and category data remain safely stored in their respective tables.
-
-Therefore, normalization reduces redundancy, maintains data integrity, and prevents anomalies.
+The argument that "keeping everything in one table is simpler" may seem attractive at first, but the structure of orders_flat.csv clearly shows how denormalization creates long‑term operational risks. The flat file duplicates customer details, product data, and sales representative information across many rows. This duplication leads directly to update anomalies, where changing a customer email or product price requires updating multiple rows. Missing even one row creates inconsistent and unreliable data, which affects reporting, analytics, and customer communication.
+The file also causes insert anomalies. For example, when introducing a new product, the system cannot register it unless an order exists because product attributes are embedded in the order rows. This makes catalog management impossible without creating fake transactions. Conversely, delete anomalies appear when removing the only order of a product or customer, which unintentionally deletes all information about that product or customer.
+Normalizing the data into 3NF solves all these issues. Customer data moves to a Customers table, product data to a Products table, orders to an Orders table, and line items to an OrderItems table. Each entity then updates independently, ensuring accuracy and consistency. Queries become more efficient, storage decreases due to reduced redundancy, and the risk of data corruption drops significantly. Normalization is not over‑engineering—it is essential for correctness, scalability, and maintainability.
