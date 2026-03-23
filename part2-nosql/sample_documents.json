@@ -1,51 +1,94 @@
 [
   {
-    "product_id": "E1001",
+    "_id": "prod_elec_001",
     "category": "Electronics",
-    "name": "4K Smart TV",
-    "brand": "Samsung",
-    "price": 55000,
-    "warranty": {
-      "duration_months": 24,
-      "type": "manufacturer"
+    "name": "Sony WH-1000XM5 Headphones",
+    "brand": "Sony",
+    "sku": "SONY-WH1000XM5-BLK",
+    "price": 29990,
+    "currency": "INR",
+    "in_stock": true,
+    "stock_qty": 45,
+    "specifications": {
+      "type": "Over-ear",
+      "connectivity": ["Bluetooth 5.2", "3.5mm Jack", "USB-C"],
+      "battery_life_hours": 30,
+      "noise_cancellation": true,
+      "frequency_response": "4 Hz – 40,000 Hz",
+      "voltage": "5V DC",
+      "warranty_years": 1
     },
-    "specs": {
-      "screen_size": "55 inch",
-      "resolution": "3840x2160",
-      "wifi_enabled": true,
-      "ports": ["HDMI", "USB", "Ethernet"]
+    "certifications": ["CE", "FCC", "BIS"],
+    "tags": ["audio", "wireless", "anc", "premium"],
+    "ratings": {
+      "average": 4.7,
+      "count": 2345
     },
-    "ratings": [4, 5, 5, 4]
+    "created_at": "2024-01-15T10:00:00Z"
   },
-
   {
-    "product_id": "C2001",
+    "_id": "prod_cloth_001",
     "category": "Clothing",
-    "name": "Men's Winter Jacket",
-    "brand": "Woodland",
-    "price": 3200,
-    "sizes_available": ["S", "M", "L", "XL"],
-    "material": "Polyester",
-    "colors": ["Black", "Blue"],
-    "care_instructions": {
-      "wash": "machine wash cold",
-      "dry": "tumble dry low"
-    }
-  },
-
-  {
-    "product_id": "G3001",
-    "category": "Groceries",
-    "name": "Organic Almonds (500g)",
-    "brand": "24 Mantra",
-    "price": 650,
-    "expiry_date": "2025-04-20",
-    "nutritional_info": {
-      "calories": 180,
-      "protein_g": 6,
-      "fat_g": 15
+    "name": "Allen Solly Men's Slim Fit Chinos",
+    "brand": "Allen Solly",
+    "sku": "AS-CHINO-KH-32",
+    "price": 1999,
+    "currency": "INR",
+    "in_stock": true,
+    "stock_qty": 120,
+    "specifications": {
+      "fabric": "98% Cotton, 2% Elastane",
+      "fit": "Slim Fit",
+      "care_instructions": ["Machine wash cold", "Do not bleach", "Tumble dry low"],
+      "sizes_available": ["28", "30", "32", "34", "36", "38"],
+      "colors_available": [
+        { "name": "Khaki", "hex": "#C3A882" },
+        { "name": "Navy", "hex": "#1B2A4A" },
+        { "name": "Olive", "hex": "#556B2F" }
+      ],
+      "gender": "Men",
+      "occasion": ["Casual", "Semi-formal"]
     },
-    "certifications": ["Organic", "Non-GMO"],
-    "storage": "Store in a cool, dry place"
+    "tags": ["bottomwear", "chinos", "cotton", "slim-fit"],
+    "ratings": {
+      "average": 4.3,
+      "count": 876
+    },
+    "created_at": "2024-02-01T08:30:00Z"
+  },
+  {
+    "_id": "prod_groc_001",
+    "category": "Groceries",
+    "name": "Tata Salt – Iodised Rock Salt",
+    "brand": "Tata",
+    "sku": "TATA-SALT-1KG",
+    "price": 28,
+    "currency": "INR",
+    "in_stock": true,
+    "stock_qty": 500,
+    "specifications": {
+      "weight_kg": 1.0,
+      "form": "Fine grain",
+      "shelf_life_days": 730,
+      "expiry_date": "2026-12-31",
+      "storage_instructions": "Store in a cool, dry place",
+      "nutritional_info": {
+        "per_100g": {
+          "energy_kcal": 0,
+          "sodium_mg": 38758,
+          "iodine_mcg": 30
+        }
+      },
+      "certifications": ["FSSAI", "ISO 9001"],
+      "allergens": [],
+      "vegetarian": true,
+      "vegan": true
+    },
+    "tags": ["salt", "iodised", "daily-essentials", "fssai-approved"],
+    "ratings": {
+      "average": 4.6,
+      "count": 11250
+    },
+    "created_at": "2024-01-05T06:00:00Z"
   }
 ]
