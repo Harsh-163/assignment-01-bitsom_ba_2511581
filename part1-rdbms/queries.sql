@@ -1,50 +1,64 @@
-##1.3 — SQL Queries
+-- ============================================================
+-- Part 1 – SQL Queries (queries.sql)
+-- All queries reference the 3NF schema defined in schema_design.sql
+-- ============================================================
 
--- Q1: List all customers from Mumbai along with their total order value     
-use assignment_db;
-select c.customer_name,sum(o.quantity * o.unit_price) AS total_order_value from customer c
-inner join orders o
-on c.customer_id = o.customer_id
-inner join city ct
-on ct.city_id = c.city_id
-where ct.city_name = 'Mumbai'
-group by c.customer_id,c.customer_name;
+-- Q1: List all customers from Mumbai along with their total order value
+SELECT
+    c.customer_id,
+    c.customer_name,
+    c.customer_city,
+    SUM(p.unit_price * oi.quantity) AS total_order_value
+FROM customers c
+JOIN orders      o  ON c.customer_id  = o.customer_id
+JOIN order_items oi ON o.order_id     = oi.order_id
+JOIN products    p  ON oi.product_id  = p.product_id
+WHERE c.customer_city = 'Mumbai'
+GROUP BY c.customer_id, c.customer_name, c.customer_city
+ORDER BY total_order_value DESC;
 
 -- Q2: Find the top 3 products by total quantity sold
-use assignment_db;
-select p.product_name,sum(o.quantity) AS total_quantity_sold from product p
-inner join orders o
-on p.product_id = o.product_id
-group by p.product_name
-order by sum(o.quantity) desc
-limit 3;
+SELECT
+    p.product_id,
+    p.product_name,
+    p.category,
+    SUM(oi.quantity) AS total_qty_sold
+FROM products    p
+JOIN order_items oi ON p.product_id = oi.product_id
+GROUP BY p.product_id, p.product_name, p.category
+ORDER BY total_qty_sold DESC
+LIMIT 3;
 
 -- Q3: List all sales representatives and the number of unique customers they have handled
-use assignment_db;
-select e.sales_rep_name,
-       count(distinct(o.customer_id)) AS unique_customers
-from employee e
-left join orders o
-  on e.sales_rep_id = o.sales_rep_id
-group by e.sales_rep_id, e.sales_rep_name;
+SELECT
+    sr.sales_rep_id,
+    sr.sales_rep_name,
+    COUNT(DISTINCT o.customer_id) AS unique_customers
+FROM sales_reps sr
+LEFT JOIN orders o ON sr.sales_rep_id = o.sales_rep_id
+GROUP BY sr.sales_rep_id, sr.sales_rep_name
+ORDER BY unique_customers DESC;
 
 -- Q4: Find all orders where the total value exceeds 10,000, sorted by value descending
-use assignment_db;
-select order_id,
-       sum(quantity * unit_price) AS total_value
-from orders
-group by order_id
-having total_value > 10000
-order by total_value desc;
+SELECT
+    o.order_id,
+    c.customer_name,
+    o.order_date,
+    SUM(p.unit_price * oi.quantity) AS order_total
+FROM orders      o
+JOIN customers   c  ON o.customer_id  = c.customer_id
+JOIN order_items oi ON o.order_id     = oi.order_id
+JOIN products    p  ON oi.product_id  = p.product_id
+GROUP BY o.order_id, c.customer_name, o.order_date
+HAVING SUM(p.unit_price * oi.quantity) > 10000
+ORDER BY order_total DESC;
 
 -- Q5: Identify any products that have never been ordered
-use assignment_db;
-select p.product_name
-from product p
-left join orders o
-  on p.product_id = o.product_id
-where o.product_id is null;
-
-
-
-
+SELECT
+    p.product_id,
+    p.product_name,
+    p.category,
+    p.unit_price
+FROM products p
+LEFT JOIN order_items oi ON p.product_id = oi.product_id
+WHERE oi.product_id IS NULL;
