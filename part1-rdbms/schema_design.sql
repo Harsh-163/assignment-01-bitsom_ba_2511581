@@ -1,101 +1,127 @@
-## 1.2 — Schema Design
--- Create Database
-CREATE DATABASE assignment_db;
+-- ============================================================
+-- Part 1 – RDBMS Schema Design
+-- Normalized to Third Normal Form (3NF)
+-- Source: orders_flat.csv
+-- ============================================================
 
--- Create City table
-use assignment_db;
-CREATE TABLE city (
-  city_id varchar(50),
-  city_name varchar(50) NOT NULL UNIQUE,
-  PRIMARY KEY (city_id)
-);
--- Create Category table
-use assignment_db;
-CREATE TABLE category (
-  category_id varchar(50),
-  category_name varchar(50) NOT NULL UNIQUE,
-  PRIMARY KEY (category_id)
-);
---  Create Product table
-use assignment_db;
-CREATE TABLE product (
-  product_id varchar(50),
-  product_name varchar(100) NOT NULL UNIQUE,
-  category_id varchar(50),
-  PRIMARY KEY (product_id),
-  FOREIGN KEY (category_id) REFERENCES category (category_id)
+-- Drop tables in reverse dependency order (safe re-run)
+DROP TABLE IF EXISTS order_items;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS products;
+DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS sales_reps;
+
+-- ============================================================
+-- Table 1: sales_reps
+-- Eliminates update anomaly: office_address stored once per rep
+-- ============================================================
+CREATE TABLE sales_reps (
+    sales_rep_id   VARCHAR(10)  NOT NULL,
+    sales_rep_name VARCHAR(100) NOT NULL,
+    sales_rep_email VARCHAR(150) NOT NULL,
+    office_address  VARCHAR(255) NOT NULL,
+    CONSTRAINT pk_sales_reps PRIMARY KEY (sales_rep_id)
 );
 
--- Create Employee table
-use assignment_db;
-CREATE TABLE employee (
-  sales_rep_id varchar(50),
-  sales_rep_name varchar(50) NOT NULL,
-  sales_rep_email varchar(50) NOT NULL,
-  office_address varchar(300) NOT NULL,
-  PRIMARY KEY (sales_rep_id),
-  UNIQUE (sales_rep_name, sales_rep_email)
+INSERT INTO sales_reps (sales_rep_id, sales_rep_name, sales_rep_email, office_address) VALUES
+('SR01', 'Deepak Joshi', 'deepak@corp.com', 'Mumbai HQ, Nariman Point, Mumbai - 400021'),
+('SR02', 'Anita Desai',  'anita@corp.com',  'Delhi Office, Connaught Place, New Delhi - 110001'),
+('SR03', 'Ravi Kumar',   'ravi@corp.com',   'South Zone, MG Road, Bangalore - 560001');
+
+-- ============================================================
+-- Table 2: customers
+-- Each customer stored once; city kept with customer
+-- ============================================================
+CREATE TABLE customers (
+    customer_id    VARCHAR(10)  NOT NULL,
+    customer_name  VARCHAR(100) NOT NULL,
+    customer_email VARCHAR(150) NOT NULL,
+    customer_city  VARCHAR(100) NOT NULL,
+    CONSTRAINT pk_customers PRIMARY KEY (customer_id)
 );
--- Create Customers table
-use assignment_db;
-CREATE TABLE customer (
-  customer_id varchar(50),
-  customer_name varchar(50) NOT NULL,
-  customer_email varchar(50) NOT NULL,
-  city_id varchar(50) NOT NULL,
-  PRIMARY KEY (customer_id),
-  FOREIGN KEY (city_id) REFERENCES city (city_id),
-  UNIQUE (customer_name, customer_email)
+
+INSERT INTO customers (customer_id, customer_name, customer_email, customer_city) VALUES
+('C001', 'Rohan Mehta',  'rohan@gmail.com',  'Mumbai'),
+('C002', 'Priya Sharma', 'priya@gmail.com',  'Delhi'),
+('C003', 'Amit Verma',   'amit@gmail.com',   'Bangalore'),
+('C004', 'Sneha Iyer',   'sneha@gmail.com',  'Chennai'),
+('C005', 'Vikram Singh', 'vikram@gmail.com', 'Mumbai'),
+('C006', 'Neha Gupta',   'neha@gmail.com',   'Delhi'),
+('C007', 'Arjun Nair',   'arjun@gmail.com',  'Bangalore'),
+('C008', 'Kavya Rao',    'kavya@gmail.com',  'Hyderabad');
+
+-- ============================================================
+-- Table 3: products
+-- Eliminates insert anomaly: products can exist without orders
+-- unit_price stored once per product (not per order row)
+-- ============================================================
+CREATE TABLE products (
+    product_id   VARCHAR(10)  NOT NULL,
+    product_name VARCHAR(100) NOT NULL,
+    category     VARCHAR(50)  NOT NULL,
+    unit_price   DECIMAL(10,2) NOT NULL,
+    CONSTRAINT pk_products PRIMARY KEY (product_id)
 );
--- Create Orders table
-use assignment_db;
+
+INSERT INTO products (product_id, product_name, category, unit_price) VALUES
+('P001', 'Laptop',        'Electronics', 55000.00),
+('P002', 'Mouse',         'Electronics',   800.00),
+('P003', 'Desk Chair',    'Furniture',    8500.00),
+('P004', 'Notebook',      'Stationery',    120.00),
+('P005', 'Headphones',    'Electronics',  3200.00),
+('P006', 'Standing Desk', 'Furniture',   22000.00),
+('P007', 'Pen Set',       'Stationery',    250.00),
+('P008', 'Webcam',        'Electronics',  2100.00);
+
+-- ============================================================
+-- Table 4: orders
+-- One row per order; links customer and sales rep
+-- ============================================================
 CREATE TABLE orders (
-  order_id varchar(100),
-  customer_id varchar(50) NOT NULL,
-  product_id varchar(50) NOT NULL,
-  sales_rep_id varchar(50) NOT NULL,
-  unit_price DECIMAL(10,2) NOT NULL,
-  quantity INT NOT NULL,
-  order_date DATETIME NOT NULL,
-  PRIMARY KEY (order_id, product_id),
-  FOREIGN KEY (customer_id) REFERENCES customer (customer_id),
-  FOREIGN KEY (product_id) REFERENCES product (product_id),
-  FOREIGN KEY (sales_rep_id) REFERENCES employee (sales_rep_id)
+    order_id     VARCHAR(15)  NOT NULL,
+    customer_id  VARCHAR(10)  NOT NULL,
+    sales_rep_id VARCHAR(10)  NOT NULL,
+    order_date   DATE         NOT NULL,
+    CONSTRAINT pk_orders      PRIMARY KEY (order_id),
+    CONSTRAINT fk_orders_cust FOREIGN KEY (customer_id)  REFERENCES customers(customer_id),
+    CONSTRAINT fk_orders_sr   FOREIGN KEY (sales_rep_id) REFERENCES sales_reps(sales_rep_id)
 );
--- Insert Values in city table
-use assignment_db;
-insert  into 
-city(city_id,city_name) 
-values 
-('CT01','Bangalore'),('CT02','Chennai'),('CT03','Delhi'),('CT04','Hyderabad'),('CT05','Mumbai');
--- Insert Values in category table
-use assignment_db;
-insert  into 
-category(category_id,category_name) 
-values 
-('CT01','Electronics'),('CT02','Furniture'),('CT03','Stationery'),('CT04','Toys'),('CT05','Cookware');
--- Insert Values in product table
-use assignment_db;
-insert  into 
-product(product_id,product_name,category_id) 
-values 
-('P001','Laptop','CT01'),('P002','Mouse','CT01'),('P003','Desk Chair','CT02'),('P004','Notebook','CT03'),('P005','Headphones','CT01');
 
--- Insert Values in employee table
-use assignment_db;
-insert  into 
-employee(sales_rep_id,sales_rep_name,sales_rep_email,office_address) 
-values 
-('SR01','Deepak Joshi','deepak@corp.com','Mumbai HQ, Nariman Point, Mumbai - 400021'),('SR02','Anita Desai','anita@corp.com','Delhi Office, Connaught Place, New Delhi - 110001'),('SR03','Ravi Kumar','ravi@corp.com','South Zone, MG Road, Bangalore - 560001'),('SR04','Rajesh','rajesh@corp.com','Trivandrum Office, Karyavattom, Trivandrum - 695001'),('SR05','Soumya','soumya@corp.com','Trivandrum Office, Karyavattom, Trivandrum - 695001');
--- Insert Values in customer table
-use assignment_db;
-insert  into 
-customer(customer_id,customer_name,customer_email,city_id) 
-values 
-('C001','Rohan Mehta','rohan@gmail.com','CT05'),('C002','Priya Sharma','priya@gmail.com','CT03'),('C003','Amit Verma','amit@gmail.com','CT01'),('C004','Sneha Iyer','sneha@gmail.com','CT02'),('C005','Vikram Singh','vikram@gmail.com','CT05');
--- Insert Values in orders table
-insert  into 
-orders(order_id,customer_id,product_id,sales_rep_id,unit_price,quantity,order_date) 
-values 
-('ORD1095','C001','P001','SR03',55000,3,'2023-08-11'),('ORD1094','C002','P003','SR01',8500,3,'2023-10-25'),('ORD1124','C003','P002','SR02',800,2,'2023-12-22'),('ORD1142','C004','P004','SR03',120,3,'2023-05-12'),('ORD1031','C005','P005','SR01',3200,1,'2023-09-17');
+INSERT INTO orders (order_id, customer_id, sales_rep_id, order_date) VALUES
+('ORD1000', 'C002', 'SR03', '2023-05-21'),
+('ORD1001', 'C004', 'SR03', '2023-02-22'),
+('ORD1002', 'C002', 'SR02', '2023-01-17'),
+('ORD1003', 'C002', 'SR01', '2023-09-16'),
+('ORD1004', 'C001', 'SR01', '2023-11-29'),
+('ORD1005', 'C007', 'SR02', '2023-10-29'),
+('ORD1006', 'C001', 'SR01', '2023-12-24'),
+('ORD1007', 'C006', 'SR01', '2023-04-21'),
+('ORD1008', 'C002', 'SR02', '2023-02-19'),
+('ORD1009', 'C006', 'SR02', '2023-01-23');
 
+-- ============================================================
+-- Table 5: order_items
+-- Each line item of an order; quantity at time of sale
+-- Resolves many-to-many between orders and products
+-- ============================================================
+CREATE TABLE order_items (
+    item_id    SERIAL,
+    order_id   VARCHAR(15) NOT NULL,
+    product_id VARCHAR(10) NOT NULL,
+    quantity   INT         NOT NULL CHECK (quantity > 0),
+    CONSTRAINT pk_order_items  PRIMARY KEY (item_id),
+    CONSTRAINT fk_oi_order     FOREIGN KEY (order_id)   REFERENCES orders(order_id),
+    CONSTRAINT fk_oi_product   FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+INSERT INTO order_items (order_id, product_id, quantity) VALUES
+('ORD1000', 'P001', 2),
+('ORD1001', 'P002', 5),
+('ORD1002', 'P005', 1),
+('ORD1003', 'P002', 5),
+('ORD1004', 'P005', 5),
+('ORD1005', 'P002', 3),
+('ORD1006', 'P007', 4),
+('ORD1007', 'P003', 3),
+('ORD1008', 'P001', 3),
+('ORD1009', 'P005', 4);
