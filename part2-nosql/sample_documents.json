@@ -1,151 +1,51 @@
 [
-{
-     "category" : "Electronics",
-    "item_code" : "ITM_RT28C3733S8",
-    "item_name" : "Refrigerator",
-
-    "product_info" : {
-    "brand_name": "Samsung",
-    "model" : "RT28C3733S8",
-    "item_type": "Multi Door"},
-
-    
-     "design_and_body" : {
-         "weight" : "46 kg",
-        "height" : "154.5 cm",
-        "width" : "55.5 cm",
-        "depth" : "63.7 cm",
-"freezer_mounted" : "Top",
-"handle_type" : "Recess Handle",
-"colors_available" : ["Red","White","Blue"]
-
-     },
-
-"interior_features" : {
-"interior_lamp" : true,
-"toughened_glass" : true,
-"ice_tray" : true,
-"door_basket" : true,
-"egg_tray" : true,
-"bottle_shelves" : 2,
-"freezer_shelves" : 2,
-"flexible_rack" : true
-
-},
-
-"technical" : {
-"capacity" : {
-  "total" : "236 L",
-  "refrigerator" : "183 L",
-   "freezer" : "53 L"},
-"compressor" : "Digital Inverter Compressor",
- "refrigerant" : "R-600a",
- "cooling_technology" : "Direct Cool"
-},
-     "pricing": {
-   "price": 23000,
-   "currency": "INR"
-}
-
-},
-
-     {
-  "category": "Clothing",
-  "item_code": "ITM_TS35008808",
-  "item_name": "T-shirt",
-
-  "product_info": {
-    "brand_name": "Tommy Hilfiger",
-    "product_title": "Europe Self Design Round Neck Slim Fit T-shirt",
-    "product_code": "35008808",
-    "gender": "Men",
-    "color": "Grey"
-  },
-
-  "pricing": {
-    "mrp": 2249,
-    "selling_price": 1281,
-    "discount_percent": 43,
-    "currency": "INR"
-  },
-
-  "size_options": ["S", "M", "L", "XL", "XXL"],
-
-  "material_details": {
-    "fabric": "Cotton",
-    "composition": "100% Regenerative Cotton",
-    "care_instructions": "Hand Wash"
-  },
-
-  "product_features": {
-    "fit": "Slim Fit",
-    "length": "Regular",
-    "neck": "Round Neck",
-    "sleeve_type": "Short Sleeves",
-    "pattern": "Self Design"
-  },
-
-  "ratings": {
-    "average_rating": 4,
-    "total_ratings": 41,
-    "reviews_count": 3
-  },
-
-  "inventory": {
-    "stock_available": true,
-    "seller": "Myntra",
-    "return_policy_days": 7
-  }
-},
   {
-"category": "Groceries",
-"item_code": "ITM_MLK500A2",
-"item_name": "Buffalo A2 Milk",
+    "product_id": "E1001",
+    "category": "Electronics",
+    "name": "4K Smart TV",
+    "brand": "Samsung",
+    "price": 55000,
+    "warranty": {
+      "duration_months": 24,
+      "type": "manufacturer"
+    },
+    "specs": {
+      "screen_size": "55 inch",
+      "resolution": "3840x2160",
+      "wifi_enabled": true,
+      "ports": ["HDMI", "USB", "Ethernet"]
+    },
+    "ratings": [4, 5, 5, 4]
+  },
 
-"product_info": {
-"brand_name": "Amul",
-"product_title": "Amul Buffalo A2 Milk",
-"unit": "500 ml",
-"country_of_origin": "India"
-},
-       
-"expiry_date": "2024-12-31",
-"pricing": {
-"selling_price": 38,
-"currency": "INR",
-"tax_included": true
-},
+  {
+    "product_id": "C2001",
+    "category": "Clothing",
+    "name": "Men's Winter Jacket",
+    "brand": "Woodland",
+    "price": 3200,
+    "sizes_available": ["S", "M", "L", "XL"],
+    "material": "Polyester",
+    "colors": ["Black", "Blue"],
+    "care_instructions": {
+      "wash": "machine wash cold",
+      "dry": "tumble dry low"
+    }
+  },
 
-"nutritional_information": {
-"energy_kcal_per_100g": 91,
-"protein_g_per_100g": 3,
-"carbohydrates_g_per_100g": 5,
-"total_sugar_g_per_100g": 5,
-"added_sugar_g_per_100g": 0,
-"total_fat_g_per_100g": 6,
-"saturated_fat_g_per_100g": 4,
-"trans_fat_g_per_100g": 0,
-"calcium_per_100g": "0.1 g"
-},
-
-"product_features": {
-"fat_profile": "Full Cream",
-"processing_type": "A2 Milk",
-"biological_source": "Buffalo Milk",
-"sugar_profile": "No Added Sugar"
-},
-
-"additional_details": {
-"shelf_life": "2 days",
-"storage_tips": "Keep under refrigeration",
-"fssai_license": "10012021000071"
-},
-
-"inventory": {
-"stock_available": true,
-"seller": "Zomato Hyperpure Private Limited",
-"return_policy": "Replacement within 24 hours if damaged or incorrect"
-}
-}
-
+  {
+    "product_id": "G3001",
+    "category": "Groceries",
+    "name": "Organic Almonds (500g)",
+    "brand": "24 Mantra",
+    "price": 650,
+    "expiry_date": "2025-04-20",
+    "nutritional_info": {
+      "calories": 180,
+      "protein_g": 6,
+      "fat_g": 15
+    },
+    "certifications": ["Organic", "Non-GMO"],
+    "storage": "Store in a cool, dry place"
+  }
 ]
